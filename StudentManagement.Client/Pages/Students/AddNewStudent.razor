@@ -1,0 +1,84 @@
+﻿@page "/add-student"
+@using StudentManagement.Client.Services
+@using StudentManagement.Shared.Models
+@inject NavigationManager navigation
+@using StudentManagement.Shared.StudentRepository
+@inject IJSRuntime Jsruntime
+@inject IStudentRepository StudentService
+
+<div class="card m-5">
+    <div class="card-header text-center">
+        <h3>Add New Student</h3>
+    </div>
+    <div class="card-body">
+        <EditForm Model="studobj" OnValidSubmit="CreateStudent">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="row m-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label"><strong>Name</strong></label>
+                        <InputText class="form-control" @bind-Value="studobj.Name" />
+                        <ValidationMessage For="() => studobj.Name" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label"><strong>Email</strong></label>
+                        <InputText class="form-control" @bind-Value="studobj.Email" />
+                        <ValidationMessage For="() => studobj.Email" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row m-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label"><strong>Country</strong></label>
+                        <InputText class="form-control" @bind-Value="studobj.Country" />
+                        <ValidationMessage For="() => studobj.Country" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label"><strong>Address</strong></label>
+                        <InputText class="form-control" @bind-Value="studobj.Address" />
+                        <ValidationMessage For="() => studobj.Address" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center m-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label"><strong>Phone Number</strong></label>
+                        <InputText class="form-control" @bind-Value="studobj.PhoneNumber" />
+                        <ValidationMessage For="() => studobj.PhoneNumber" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center mt-4">
+                <div class="col-md-6 text-center">
+                    <a href="/student-lists" class="btn btn-danger ml-2">Cancel</a>
+                    <button class="btn btn-primary ml-2" type="submit">Save</button>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    public Student studobj { get; set; } = new Student();
+
+    protected async Task CreateStudent()
+    {
+        await StudentService.AddStudentAsync(studobj);
+        navigation.NavigateTo("/student-lists");
+    }
+
+    private void Cancel()
+    {
+        navigation.NavigateTo("/student-lists");
+    }
+}
