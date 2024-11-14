@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using StudentManagement.Client.Services;
 using StudentManagement.Components;
 using StudentManagement.Components.Account;
 using StudentManagement.Data;
@@ -38,14 +37,14 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:5001/api/") });
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
-builder.Services.AddScoped<IStudentRepository, StudentService>();
-builder.Services.AddScoped(sp =>
-{
-    var baseAddress = new Uri(builder.Configuration.GetSection("BaseAddress").Value!);
-    return new HttpClient { BaseAddress = baseAddress };
-});
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+});
 
 var app = builder.Build();
 
@@ -66,7 +65,7 @@ app.UseAuthorization();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
-
+app.UseCors("AllowAllOrigins");
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()

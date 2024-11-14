@@ -14,13 +14,19 @@ namespace StudentManagement.Client.Services
 
         public async Task<Student> AddStudentAsync(Student student)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/Student/AddStudent", student);
+            var response = await _httpClient.PostAsJsonAsync("api/Students/AddStudent", student);
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<Student>();
             }
+            else
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Error adding student: {errorMessage}");
+            }
             return null;
         }
+
 
         public Task<Student> DeleteStudentAsync(int studentId)
         {

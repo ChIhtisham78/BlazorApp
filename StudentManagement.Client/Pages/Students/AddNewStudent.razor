@@ -7,26 +7,28 @@
 @inject IStudentRepository StudentService
 
 <div class="card m-5">
-    <div class="card-header text-center">
-        <h3>Add New Student</h3>
-    </div>
     <div class="card-body">
-        <EditForm Model="studobj" OnValidSubmit="CreateStudent">
-            <DataAnnotationsValidator />
+        <EditForm Model="studobj" OnValidSubmit="CreateStudent" OnInvalidSubmit="HandleInvalidSubmit" FormName="addstudent">
             <ValidationSummary />
             <div class="row m-3">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="control-label"><strong>Name</strong></label>
-                        <InputText class="form-control" @bind-Value="studobj.Name" />
-                        <ValidationMessage For="() => studobj.Name" />
+                        <InputText class="form-control" @bind-Value="studobj.Name" @oninput="ClearNameError" />
+                        @if (showNameError)
+                        {
+                            <span class="text-danger">Name is required.</span>
+                        }
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="control-label"><strong>Email</strong></label>
-                        <InputText class="form-control" @bind-Value="studobj.Email" />
-                        <ValidationMessage For="() => studobj.Email" />
+                        <InputText class="form-control" @bind-Value="studobj.Email" @oninput="ClearEmailError" />
+                        @if (showEmailError)
+                        {
+                            <span class="text-danger">Email is required.</span>
+                        }
                     </div>
                 </div>
             </div>
@@ -35,15 +37,21 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="control-label"><strong>Country</strong></label>
-                        <InputText class="form-control" @bind-Value="studobj.Country" />
-                        <ValidationMessage For="() => studobj.Country" />
+                        <InputText class="form-control" @bind-Value="studobj.Country" @oninput="ClearCountryError" />
+                        @if (showCountryError)
+                        {
+                            <span class="text-danger">Country is required.</span>
+                        }
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="control-label"><strong>Address</strong></label>
-                        <InputText class="form-control" @bind-Value="studobj.Address" />
-                        <ValidationMessage For="() => studobj.Address" />
+                        <InputText class="form-control" @bind-Value="studobj.Address" @oninput="ClearAddressError" />
+                        @if (showAddressError)
+                        {
+                            <span class="text-danger">Address is required.</span>
+                        }
                     </div>
                 </div>
             </div>
@@ -52,8 +60,11 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="control-label"><strong>Phone Number</strong></label>
-                        <InputText class="form-control" @bind-Value="studobj.PhoneNumber" />
-                        <ValidationMessage For="() => studobj.PhoneNumber" />
+                        <InputText class="form-control" @bind-Value="studobj.PhoneNumber" @oninput="ClearPhoneError" />
+                        @if (showPhoneError)
+                        {
+                            <span class="text-danger">Phone Number is required.</span>
+                        }
                     </div>
                 </div>
             </div>
@@ -70,12 +81,74 @@
 
 @code {
     public Student studobj { get; set; } = new Student();
+    private bool showNameError, showEmailError, showCountryError, showAddressError, showPhoneError;
 
     protected async Task CreateStudent()
     {
-        await StudentService.AddStudentAsync(studobj);
-        navigation.NavigateTo("/student-lists");
+        ResetErrorFlags();
+
+        if (ValidateForm())
+        {
+            await StudentService.AddStudentAsync(studobj);
+            navigation.NavigateTo("/student-lists");
+        }
+        else
+        {
+            await StudentService.AddStudentAsync(studobj);
+            navigation.NavigateTo("/student-lists");
+        }
     }
+
+    private bool ValidateForm()
+    {
+        bool isValid = true;
+        if (string.IsNullOrWhiteSpace(studobj.Name))
+        {
+            showNameError = true;
+            isValid = false;
+        }
+        if (string.IsNullOrWhiteSpace(studobj.Email))
+        {
+            showEmailError = true;
+            isValid = false;
+        }
+        if (string.IsNullOrWhiteSpace(studobj.Country))
+        {
+            showCountryError = true;
+            isValid = false;
+        }
+        if (string.IsNullOrWhiteSpace(studobj.Address))
+        {
+            showAddressError = true;
+            isValid = false;
+        }
+        if (string.IsNullOrWhiteSpace(studobj.PhoneNumber))
+        {
+            showPhoneError = true;
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private void ResetErrorFlags()
+    {
+        showNameError = false;
+        showEmailError = false;
+        showCountryError = false;
+        showAddressError = false;
+        showPhoneError = false;
+    }
+
+    private void HandleInvalidSubmit()
+    {
+        // If invalid submit occurs, you can display a message here if needed.
+    }
+
+    private void ClearNameError(ChangeEventArgs e) => showNameError = string.IsNullOrWhiteSpace(e.Value?.ToString());
+    private void ClearEmailError(ChangeEventArgs e) => showEmailError = string.IsNullOrWhiteSpace(e.Value?.ToString());
+    private void ClearCountryError(ChangeEventArgs e) => showCountryError = string.IsNullOrWhiteSpace(e.Value?.ToString());
+    private void ClearAddressError(ChangeEventArgs e) => showAddressError = string.IsNullOrWhiteSpace(e.Value?.ToString());
+    private void ClearPhoneError(ChangeEventArgs e) => showPhoneError = string.IsNullOrWhiteSpace(e.Value?.ToString());
 
     private void Cancel()
     {

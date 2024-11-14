@@ -6,35 +6,32 @@
 @inject IJSRuntime Jsruntime
 @inject IStudentRepository StudentService
 
+<style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha384-DyZ88mC6Up2uqS2hK5eu5f3bcBrn5n2v6bq1j5thxWZ6L5qFqAHsiZ5eFZnn6yF" crossorigin="anonymous" >
+</style>
 <div class="container">
     <div class="row">
-
-        <div class="d-flex">
+        <div class="d-flex mb-3 justify-content-end">
             <a href="/add-student" class="btn btn-primary btn-md">Add New Student</a>
         </div>
-
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                  @*   @if (!AllStudents.Any())
-                    {
-                        <p><em>Loading Students...</em></p>
-                    } *@
+                    <h5>Student List</h5>
                 </div>
                 @if (AllStudents.Any())
                 {
                     <div class="card-body">
-                        <table>
+                        <table class="table table-bordered table-striped table-hovered">
                             <thead>
                                 <tr>
                                     <th>Id</th>
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Country</th>
-                                    <th>PhoneNumber</th>
+                                    <th>Phone Number</th>
                                     <th>Address</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -48,10 +45,12 @@
                                         <td>@student.PhoneNumber</td>
                                         <td>@student.Address</td>
                                         <td>
-                                            <a href="/student/edit/@student.Id" class="btn btn-success">Edit</a>
-                                        </td>
-                                        <td>
-                                            <a href="/student/edit/@student.Id" class="btn btn-danger">Delete</a>
+                                            <a href="/student/edit/@student.Id" class="text-success me-2">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </a>
+                                            <a href="delete/student/@student.Id" @onclick="() => DeleteStudent(student.Id)" class="text-danger">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                 }
@@ -59,12 +58,16 @@
                         </table>
                     </div>
                 }
+                else
+                {
+                    <div class="card-body">
+                        <p><em>No students available.</em></p>
+                    </div>
+                }
             </div>
         </div>
     </div>
 </div>
-
-<h3>Students List</h3>
 
 @code {
     public List<Student> AllStudents { get; set; } = new();
@@ -83,8 +86,14 @@
         AllStudents.AddRange(students);
     }
 
-    private void EditStudent()
+    private void EditStudent(int id)
     {
         navigation.NavigateTo($"/student/edit/{id}");
+    }
+
+    private async Task DeleteStudent(int id)
+    {
+        await StudentService.DeleteStudentAsync(id);
+        await LoadAllStudents();
     }
 }

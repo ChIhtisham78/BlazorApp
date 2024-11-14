@@ -14,18 +14,19 @@ namespace StudentManagement.Services
         }
         public async Task<Student> AddStudentAsync(Student student)
         {
-            var addstudent = new Student();
+            var addstudent = new Student
             {
-                addstudent.Name = student.Name;
-                addstudent.Email = student.Email;
-                addstudent.Country = student.Country;
-                addstudent.Address = student.Address;
-                addstudent.PhoneNumber = student.PhoneNumber;
-            }
-            _context.Students.Add(student);
+                Name = student.Name,
+                Email = student.Email,
+                Country = student.Country,
+                Address = student.Address,
+                PhoneNumber = student.PhoneNumber
+            };
+            await _context.Students.AddAsync(addstudent);
             await _context.SaveChangesAsync();
-            return student;
+            return addstudent;
         }
+
 
         public async Task<Student> DeleteStudentAsync(int studentId)
         {
