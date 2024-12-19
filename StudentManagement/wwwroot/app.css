@@ -19,9 +19,15 @@ a, .btn-link {
 .content {
     padding-top: 1.1rem;
 }
+.skyblue-border {
+    border: 1px solid skyblue;
+}
 
 h1:focus {
     outline: none;
+}
+body {
+    background-color: lightgray
 }
 
 .valid.modified:not([type=checkbox]) {

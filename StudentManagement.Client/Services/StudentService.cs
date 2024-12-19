@@ -1,67 +1,41 @@
 ﻿using StudentManagement.Shared.Models;
 using StudentManagement.Shared.StudentRepository;
-using System.Net.Http.Json;
 
 namespace StudentManagement.Client.Services
 {
     public class StudentService : IStudentRepository
     {
-        private readonly HttpClient _httpClient;
-        public StudentService(HttpClient httpClient)
+        private readonly IStudentRepository _studentRepository;
+        public StudentService(IStudentRepository studentRepository)
         {
-            _httpClient = httpClient;
+            _studentRepository = studentRepository;
         }
 
         public async Task<Student> AddStudentAsync(Student student)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/Students/AddStudent", student);
-            if (response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadFromJsonAsync<Student>();
-            }
-            else
-            {
-                var errorMessage = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Error adding student: {errorMessage}");
-            }
-            return null;
+            return await _studentRepository.AddStudentAsync(student);
+
         }
 
-
-        public Task<Student> DeleteStudentAsync(int studentId)
+        public async Task<Student> DeleteStudentAsync(int studentId)
         {
-            throw new NotImplementedException();
+            return await _studentRepository.DeleteStudentAsync(studentId);
         }
 
         public async Task<List<Student>> GetAllStudentAsync()
         {
-            var response = await _httpClient.GetAsync("api/Student/GetAllStudents");
-            if (response.IsSuccessStatusCode)
-            {
-                var students = await response.Content.ReadFromJsonAsync<List<Student>>();
-                return students ?? new List<Student>();
-            }
-            return new List<Student>();
+            return await _studentRepository.GetAllStudentAsync();
         }
 
         public async Task<Student> GetStudentByIdAsync(int studentId)
         {
-            var response = await _httpClient.GetAsync($"api/Student/GetStudentById/{studentId}");
-            if (response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadFromJsonAsync<Student>();
-            }
-            return null;
+            return await _studentRepository.GetStudentByIdAsync(studentId);
         }
 
-        public async Task<Student> UpdateStudentAsync(Student student)
+        public async Task<Student> UpdateStudentAsync(int id, Student student)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/Student/UpdateStudent", student);
-            if (response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadFromJsonAsync<Student>();
-            }
-            return null;
+            return await _studentRepository.UpdateStudentAsync(id, student);
+
         }
     }
 }

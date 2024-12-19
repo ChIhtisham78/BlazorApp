@@ -30,12 +30,16 @@ namespace StudentManagement.Services
 
         public async Task<Student> DeleteStudentAsync(int studentId)
         {
-            var student = await _context.Students.Where(x => x.Id == studentId).FirstOrDefaultAsync();
-            if (student == null) throw new ArgumentException();
-            _context.Students.RemoveRange(student);
+            var student = await _context.Students.FindAsync(studentId);
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"Student with ID {studentId} not found.");
+            }
+            _context.Students.Remove(student);
             await _context.SaveChangesAsync();
             return student;
         }
+
 
         public async Task<List<Student>> GetAllStudentAsync()
         {
@@ -53,13 +57,24 @@ namespace StudentManagement.Services
             return singlestudent;
         }
 
-        public async Task<Student> UpdateStudentAsync(Student student)
+        public async Task<Student> UpdateStudentAsync(int id, Student student)
         {
-            if (student == null) throw new ArgumentNullException();
-            var existingstudent = _context.Students.Update(student).Entity;
-            await _context.SaveChangesAsync();
-            return existingstudent;
+            var updatestudent = await _context.Students.FindAsync(id);
+            if (updatestudent == null)
+            {
+                throw new ArgumentNullException();
+            }
+            updatestudent.Name = student.Name;
+            updatestudent.Email = student.Email;
+            updatestudent.Address = student.Address;
+            updatestudent.PhoneNumber = student.PhoneNumber;
+            updatestudent.Country = student.Country;
 
+            _context.Students.Update(updatestudent);
+            await _context.SaveChangesAsync();
+
+            return updatestudent;
         }
+
     }
 }
