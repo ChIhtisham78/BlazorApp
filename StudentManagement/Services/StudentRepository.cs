@@ -59,22 +59,23 @@ namespace StudentManagement.Services
 
         public async Task<Student> UpdateStudentAsync(int id, Student student)
         {
-            var updatestudent = await _context.Students.FindAsync(id);
-            if (updatestudent == null)
+            var updatestudents = await _context.Students.FindAsync(id);
+            if (updatestudents == null)
             {
                 throw new ArgumentNullException();
             }
-            updatestudent.Name = student.Name;
-            updatestudent.Email = student.Email;
-            updatestudent.Address = student.Address;
-            updatestudent.PhoneNumber = student.PhoneNumber;
-            updatestudent.Country = student.Country;
+            updatestudents.Name = student.Name;
+            updatestudents.Email = student.Email;
+            updatestudents.Country = student.Country;
+            updatestudents.PhoneNumber = student.PhoneNumber;
+            updatestudents.Address = student.Address;
 
-            _context.Students.Update(updatestudent);
+            _context.Students.Update(updatestudents);
             await _context.SaveChangesAsync();
 
-            return updatestudent;
+            return updatestudents;
         }
+
 
     }
 }
