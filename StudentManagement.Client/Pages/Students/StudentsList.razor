@@ -6,19 +6,21 @@
 @inject IJSRuntime Jsruntime
 @inject IStudentRepository StudentService
 
-<style>
+@* <style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha384-DyZ88mC6Up2uqS2hK5eu5f3bcBrn5n2v6bq1j5thxWZ6L5qFqAHsiZ5eFZnn6yF" crossorigin="anonymous" >
-</style>
+</style> *@
 <div class="container">
     <div class="row">
         <div class="d-flex mb-3 justify-content-end">
             <a href="/add-student" class="btn btn-primary btn-md">Add New Student</a>
         </div>
+       
         <div class="col-md-12">
+            <div class="card-header">
+                <h5>Student List</h5>
+            </div>
             <div class="card">
-                <div class="card-header">
-                    <h5>Student List</h5>
-                </div>
+               
                 @if (AllStudents.Any())
                 {
                     <div class="card-body">

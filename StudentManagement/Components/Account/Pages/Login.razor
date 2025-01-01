@@ -1,4 +1,5 @@
 ﻿@page "/Account/Login"
+@inject NavigationManager Navigation
 
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Authentication
@@ -87,30 +88,30 @@
 
     public async Task LoginUser()
     {
-        // This doesn't count login failures towards account lockout
-        // To enable password failures to trigger account lockout, set lockoutOnFailure: true
         var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
         if (result.Succeeded)
         {
-            Logger.LogInformation("User logged in.");
-            RedirectManager.RedirectTo(ReturnUrl);
+            Logger.LogInformation("User logged in successfully.");
+
+            Navigation.NavigateTo("/student-lists");
         }
         else if (result.RequiresTwoFactor)
         {
-            RedirectManager.RedirectTo(
-                "Account/LoginWith2fa",
-                new() { ["returnUrl"] = ReturnUrl, ["rememberMe"] = Input.RememberMe });
+            Navigation.NavigateTo($"Account/LoginWith2fa?returnUrl={ReturnUrl}&rememberMe={Input.RememberMe}");
         }
         else if (result.IsLockedOut)
         {
-            Logger.LogWarning("User account locked out.");
-            RedirectManager.RedirectTo("Account/Lockout");
+            Logger.LogWarning("User account is locked out.");
+
+            Navigation.NavigateTo("Account/Lockout");
         }
         else
         {
             errorMessage = "Error: Invalid login attempt.";
         }
     }
+
 
     private sealed class InputModel
     {

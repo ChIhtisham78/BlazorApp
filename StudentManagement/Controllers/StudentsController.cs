@@ -29,14 +29,20 @@ namespace StudentManagement.Controllers
         }
 
         [HttpPost("AddStudent")]
-        public async Task<ActionResult<Student>> AddStudentAsync(Student student)
+        public async Task<ActionResult<Student>> AddStudentAsync([FromBody] Student student)
         {
-            var addstudent = await _studentRepository.AddStudentAsync(student);
-            return Ok(addstudent);
+            if (student == null)
+            {
+                return BadRequest("Student data is null");
+            }
+
+            var addStudent = await _studentRepository.AddStudentAsync(student);
+            return Ok(addStudent);
         }
 
+
         [HttpPut("UpdateStudent")]
-        public async Task<ActionResult<Student>> UpdateStudent(int id, Student student)
+        public async Task<ActionResult<Student>> UpdateStudent(int id, [FromBody] Student student)
         {
             var existingstudent = await _studentRepository.UpdateStudentAsync(id, student);
             return Ok(existingstudent);
