@@ -8,20 +8,21 @@
 
 <div class="card m-5">
     <div class="card-body">
-        <EditForm Model="studobj" OnValidSubmit="CreateStudent"  FormName="addstudent" autocomplete="off">
+        <EditForm Model="studobj" OnValidSubmit="CreateStudent" FormName="addstudent" autocomplete="off">
             <ValidationSummary />
             <div class="row m-3">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="control-label"><strong>Name</strong></label>
-                        <InputText class="form-control" @bind="studobj.Name" />
+                        <InputText class="form-control" @bind-Value="studobj.Name" />
+                        <ValidationMessage For="@(() => studobj.Name)" />
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="control-label"><strong>Email</strong></label>
-                        <InputText class="form-control" @bind="studobj.Email" />
-
+                        <InputText class="form-control" @bind-Value="studobj.Email" />
+                        <ValidationMessage For="@(() => studobj.Email)" />
                     </div>
                 </div>
             </div>
@@ -30,15 +31,15 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="control-label"><strong>Country</strong></label>
-                        <InputText class="form-control" @bind="studobj.Country" />
-
+                        <InputText class="form-control" @bind-Value="studobj.Country" />
+                        <ValidationMessage For="@(() => studobj.Country)" />
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="control-label"><strong>Address</strong></label>
-                        <InputText class="form-control" @bind="studobj.Address" />
-
+                        <InputText class="form-control" @bind-Value="studobj.Address" />
+                        <ValidationMessage For="@(() => studobj.Address)" />
                     </div>
                 </div>
             </div>
@@ -47,8 +48,8 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="control-label"><strong>Phone Number</strong></label>
-                        <InputText class="form-control" @bind="studobj.PhoneNumber" />
-
+                        <InputText class="form-control" @bind-Value="studobj.PhoneNumber" />
+                        <ValidationMessage For="@(() => studobj.PhoneNumber)" />
                     </div>
                 </div>
             </div>
@@ -65,13 +66,13 @@
 
 @code {
     public Student studobj { get; set; } = new Student();
+
     protected async Task CreateStudent()
     {
-
         await StudentService.AddStudentAsync(studobj);
         navigation.NavigateTo("/student-lists");
-
     }
+
     private void Cancel()
     {
         navigation.NavigateTo("/student-lists");
